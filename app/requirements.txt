@@ -1,0 +1,7 @@
+# Dependencias mínimas para desplegar solo la interfaz (p. ej. en Streamlit Community Cloud)
+pandas>=2.2
+numpy>=1.26
+scikit-learn==1.9.0
+shap>=0.46
+joblib>=1.4
+streamlit>=1.40

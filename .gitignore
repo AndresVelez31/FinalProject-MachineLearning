@@ -1,0 +1,12 @@
+# Datos crudos: se descargan desde Kaggle al ejecutar el notebook (kagglehub)
+data/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Streamlit
+.streamlit/secrets.toml
