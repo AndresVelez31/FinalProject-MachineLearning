@@ -3,6 +3,9 @@
 Proyecto final de Fundamentos de Aprendizaje Automático. Una herramienta para el equipo de operaciones de Olist (marketplace brasileño): **en el momento en que el vendedor entrega el paquete a la transportadora, estima la probabilidad de que llegue después de la fecha prometida al cliente** y explica por qué.
 
 - **Datos:** [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (Kaggle, CC BY-NC-SA 4.0): ~100 mil pedidos reales de 2016–2018 en 9 tablas.
+- **Integrantes:** _(completar: nombre — código)_
+- **App desplegada:** _(pegar aquí la URL pública de Streamlit Community Cloud)_
+- **Video de demostración (2 min):** _(pegar aquí el enlace)_
 - **Paradigmas:** no supervisado (segmentación de vendedores con K-Means, clustering jerárquico, DBSCAN y PCA) → supervisado (clasificación con kNN, árbol de decisión, Random Forest, Gradient Boosting y SVM, explicada con SHAP).
 
 ## Resultados principales
@@ -26,7 +29,7 @@ Decisiones clave, cada una justificada con evidencia en el notebook:
 ## Estructura
 
 ```
-Final Boss/
+FinalProject-MachineLearning/
 ├── model_development.ipynb   # paso a paso: EDA, segmentación, modelos, generalización, métricas, SHAP, reajuste
 ├── src/olist_ml.py           # transformaciones compartidas por el notebook y la interfaz
 ├── app/app.py                # interfaz Streamlit para el equipo de operaciones
@@ -54,7 +57,7 @@ Final Boss/
 pip install -r requirements.txt
 ```
 
-**Notebook:** abrir `model_development.ipynb` y ejecutar todas las celdas desde la carpeta `Final Boss`. Los datos se descargan automáticamente del dataset oficial de Kaggle con `kagglehub` (no requiere token). La ejecución completa tarda ~12 minutos en CPU y regenera `models/late_delivery_model.joblib`.
+**Notebook:** abrir `model_development.ipynb` y ejecutar todas las celdas desde la carpeta raíz del repositorio. Los datos se descargan automáticamente del dataset oficial de Kaggle con `kagglehub` (no requiere token). La ejecución completa tarda ~12 minutos en CPU y regenera `models/late_delivery_model.joblib`.
 
 **Interfaz:**
 
@@ -65,12 +68,12 @@ streamlit run app/app.py
 Se abre en `http://localhost:8501`, con cuatro pestañas:
 
 - **Evaluar un despacho:** formulario del pedido → probabilidad, semáforo, acción sugerida, segmento del vendedor y razones (SHAP).
-- **Lote del día:** subir un CSV con los despachos del día y descargar la lista priorizada.
+- **Lote del día:** subir un CSV con los despachos del día y descargar la lista priorizada. Las filas con fechas inválidas o fuera de orden se informan y se omiten; para vendedores nuevos se puede indicar su estado en la columna opcional `seller_state`.
 - **Ejemplos reales:** pedidos del periodo de prueba con su resultado real.
 - **Segmentos de vendedores.**
 
-**Publicarla en internet:** en [Streamlit Community Cloud](https://streamlit.io/cloud), conectar este repositorio y elegir `Final Boss/app/app.py` como archivo principal. Se instala `app/requirements.txt`; el modelo ya va en `models/` y no se necesitan los datos crudos.
+**Publicarla en internet:** en [Streamlit Community Cloud](https://streamlit.io/cloud), conectar este repositorio y elegir `app/app.py` como archivo principal. Se instala `app/requirements.txt` (con `scikit-learn==1.9.0` fijado: el modelo `.joblib` solo se puede cargar con esa versión); el modelo ya va en `models/` y no se necesitan los datos crudos.
 
 ## Limitaciones
 
-El dataset no incluye la transportadora ni eventos de rastreo, probablemente la mayor fuente de información sobre retrasos, y termina en 2018. Las probabilidades se sobreestiman cuando el periodo tiene menos retrasos que el entrenamiento; por eso la lista diaria usa el orden de riesgo y no un corte fijo.
+El dataset no incluye la transportadora ni eventos de rastreo, probablemente la mayor fuente de información sobre retrasos, y termina en 2018. Las probabilidades se sobreestiman cuando el periodo tiene menos retrasos que el entrenamiento; por eso la lista diaria usa el orden de riesgo y no un corte fijo, y los umbrales del semáforo se recalibran con los despachos de los últimos 30 días al exportar el modelo (política de la sección 14.3).

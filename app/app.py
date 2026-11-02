@@ -247,7 +247,8 @@ with tab_one:
 with tab_batch:
     st.subheader("Priorizar los despachos del día")
     st.write("Suba un archivo CSV con un despacho por fila. Descargue la plantilla para ver el formato; "
-             "deje `seller_id` vacío para vendedores nuevos.")
+             "deje `seller_id` vacío para vendedores nuevos e indique su estado en la columna opcional "
+             "`seller_state` (si falta, se asume SP).")
     ex = B["examples"].head(3)
     template = pd.DataFrame({
         "seller_id": ex.seller_id, "order_purchase_timestamp": ex.order_purchase_timestamp,
@@ -258,6 +259,7 @@ with tab_batch:
         "installments": ex.installments, "customer_state": ex.customer_state,
         "customer_zip_code_prefix": ex.customer_zip_code_prefix, "category": ex.category,
         "payment_type": ex.payment_type})[FORM_COLUMNS]
+    template["seller_state"] = ""  # opcional: solo para vendedores nuevos (seller_id vacío)
     st.download_button("Descargar plantilla CSV", template.to_csv(index=False).encode("utf-8"),
                        "plantilla_despachos.csv", "text/csv")
     up = st.file_uploader("Archivo de despachos", type="csv")
@@ -267,17 +269,52 @@ with tab_batch:
         if missing:
             st.error(f"Faltan columnas: {', '.join(missing)}")
         else:
-            for c in ["order_purchase_timestamp", "order_approved_at", "order_delivered_carrier_date",
-                      "order_estimated_delivery_date", "shipping_limit"]:
-                data[c] = pd.to_datetime(data[c])
+            date_cols = ["order_purchase_timestamp", "order_approved_at", "order_delivered_carrier_date",
+                         "order_estimated_delivery_date", "shipping_limit"]
+            for c in date_cols:
+                data[c] = pd.to_datetime(data[c], errors="coerce")
+            numeric_cols = ["price", "freight", "weight_g", "length_cm", "height_cm", "width_cm", "n_items",
+                            "photos", "description_len", "installments", "customer_zip_code_prefix"]
+            for c in numeric_cols:
+                data[c] = pd.to_numeric(data[c], errors="coerce")
+            if "seller_state" not in data.columns:
+                data["seller_state"] = np.nan
+            data["seller_id"] = data["seller_id"].where(data["seller_id"].astype(str).str.strip().ne(""))
+
+            # Validación por fila: se descartan (y se informan) las filas que no se pueden evaluar
+            problems = pd.Series("", index=data.index)
+            problems[data[date_cols].isna().any(axis=1)] = "fecha vacía o con formato inválido"
+            bad_order = ~((data.order_purchase_timestamp <= data.order_approved_at)
+                          & (data.order_approved_at <= data.order_delivered_carrier_date))
+            problems[(problems == "") & bad_order] = "fechas fuera de orden (compra ≤ aprobación ≤ despacho)"
+            problems[(problems == "") & data[["price", "freight", "weight_g"]].isna().any(axis=1)] = \
+                "falta precio, flete o peso"
+            bad = problems != ""
+            if bad.any():
+                st.warning(f"Se omitieron {int(bad.sum())} filas que no se pueden evaluar:")
+                st.dataframe(pd.DataFrame({"fila del CSV": data.index[bad] + 2, "problema": problems[bad]}),
+                             hide_index=True)
+            unknown = data.seller_id.notna() & ~data.seller_id.isin(SELLERS.index) & ~bad
+            if unknown.any():
+                st.info(f"{int(unknown.sum())} filas tienen un `seller_id` que no está en la base de vendedores; "
+                        "se evalúan como vendedores nuevos. Revise que el identificador esté bien escrito.")
+            data = data[~bad].reset_index(drop=True)
+            if data.empty:
+                st.error("Ninguna fila se pudo evaluar.")
+                st.stop()
             out = []
             for _, r in data.iterrows():
                 form = r.to_dict()
-                sid = form["seller_id"] if isinstance(form["seller_id"], str) else None
+                sid = form["seller_id"] if isinstance(form["seller_id"], str) and form["seller_id"] in SELLERS.index \
+                    else None
                 form["seller_id"] = sid
-                form["seller_state"] = SELLERS.loc[sid, "seller_state"] if sid in SELLERS.index else "SP"
-                form["seller_zip"] = (SELLERS.loc[sid, "seller_zip"] if sid in SELLERS.index
-                                      else typical_seller_zip(form["seller_state"]))
+                if sid is not None:
+                    form["seller_state"] = SELLERS.loc[sid, "seller_state"]
+                    form["seller_zip"] = SELLERS.loc[sid, "seller_zip"]
+                else:
+                    state = form.get("seller_state")
+                    form["seller_state"] = state if isinstance(state, str) and state in B["choices"]["customer_state"] else "SP"
+                    form["seller_zip"] = typical_seller_zip(form["seller_state"])
                 out.append(build_row(form))
             rows = pd.concat(out, ignore_index=True)
             probs = MODEL.predict_proba(rows)[:, 1]
