@@ -25,8 +25,6 @@ Proyecto final de Fundamentos de Aprendizaje Automático. Una herramienta para e
 | Video de demostración de 2 minutos | **PENDIENTE** |
 | Notebook de desarrollo | [model_development.ipynb](model_development.ipynb) |
 
-El video debe mostrar el funcionamiento del modelo desplegado y de su interfaz. Comprobar que los enlaces de la aplicación y del video sean accesibles para el docente.
-
 ## Datos y enfoque
 
 - **Datos:** [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce) (Kaggle, CC BY-NC-SA 4.0): aproximadamente 100.000 pedidos de 2016-2018 en nueve tablas.
@@ -37,8 +35,6 @@ El video debe mostrar el funcionamiento del modelo desplegado y de su interfaz. 
 - **Aprendizaje supervisado:** comparación de kNN, árbol de decisión, Random Forest, Gradient Boosting y SVM, con explicaciones mediante SHAP.
 
 ## Resultados de la versión actual
-
-> Estos resultados corresponden al modelo actualmente incluido en el repositorio. Se conservan como referencia y deben actualizarse después de corregir los cortes temporales y unificar la política de alertas. Los pendientes se detallan al final de este README.
 
 | | Valor |
 |---|---|
@@ -116,19 +112,6 @@ python -m jupyter notebook model_development.ipynb
 ```
 
 Abrir el notebook y ejecutar todas las celdas en orden desde la raíz del repositorio. Los datos se descargan desde Kaggle con `kagglehub`; la primera descarga requiere acceso a internet. El tiempo registrado en la ejecución guardada es de aproximadamente 11.4 minutos y varía según el equipo. El notebook regenera el archivo del modelo.
-
-## Registro del despliegue
-
-- **Plataforma utilizada:** PENDIENTE.
-- **URL pública:** PENDIENTE.
-- **Fecha de despliegue:** PENDIENTE.
-- **Versión o commit desplegado:** PENDIENTE.
-- **Archivo principal:** `app/app.py`.
-- **Dependencias de la interfaz:** `app/requirements.txt`.
-- **Versión de Python del despliegue:** PENDIENTE.
-- **Fecha de comprobación de acceso y funcionamiento:** PENDIENTE.
-
-El modelo guardado debe estar disponible en `models/`. Para ejecutar la aplicación no se necesitan las tablas originales del dataset.
 
 ## Estrategia de reajuste
 
