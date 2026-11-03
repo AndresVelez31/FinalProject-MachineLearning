@@ -7,9 +7,9 @@ Proyecto final de Fundamentos de Aprendizaje Automático. Una herramienta para e
 | Integrante | Identificación |
 |---|---|
 | Sebastian Salazar Henao | 1022003377 |
-| Andres Felipe Velez Alvarez | PENDIENTE |
-| Samuel Samper Cardona | PENDIENTE |
-| Nathalia Cardoza | PENDIENTE |
+| Andres Felipe Velez Alvarez | 1021923619 |
+| Samuel Samper Cardona | 1040180930 |
+| Nathalia Cardoza | 4992531 |
 
 - **Universidad:** EAFIT.
 - **Docente:** Yomin Estiven Jaramillo Munera.
@@ -22,7 +22,7 @@ Proyecto final de Fundamentos de Aprendizaje Automático. Una herramienta para e
 |---|---|
 | Repositorio | [FinalProject-MachineLearning](https://github.com/AndresVelez31/FinalProject-MachineLearning) |
 | Aplicación desplegada | https://olist-alerta-retrasos.streamlit.app/ |
-| Video de demostración de 2 minutos | **PENDIENTE:** |
+| Video de demostración de 2 minutos | **PENDIENTE** |
 | Notebook de desarrollo | [model_development.ipynb](model_development.ipynb) |
 
 El video debe mostrar el funcionamiento del modelo desplegado y de su interfaz. Comprobar que los enlaces de la aplicación y del video sean accesibles para el docente.
