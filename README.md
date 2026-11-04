@@ -22,7 +22,7 @@ Proyecto final de Fundamentos de Aprendizaje Automático. Una herramienta para e
 |---|---|
 | Repositorio | [FinalProject-MachineLearning](https://github.com/AndresVelez31/FinalProject-MachineLearning) |
 | Aplicación desplegada | https://olist-alerta-retrasos.streamlit.app/ |
-| Video de demostración de 2 minutos | **PENDIENTE** |
+| Video de demostración de 2 minutos | https://youtu.be/YaWQvpd0BXs |
 | Notebook de desarrollo | [model_development.ipynb](model_development.ipynb) |
 
 ## Datos y enfoque
@@ -50,7 +50,7 @@ Decisiones documentadas en los experimentos actuales del notebook:
 - El segmento del vendedor **no mejora** el clasificador de forma consistente: se usa como herramienta de negocio en la interfaz, no como variable del modelo.
 - Ni `class_weight`, ni submuestreo, ni **SMOTENC**, ni **CTGAN** mejoran la PR-AUC, y los dos primeros distorsionan las probabilidades: no se balancea.
 - Gradient Boosting y SVM obtienen resultados cercanos; se elige Gradient Boosting por sus probabilidades y la posibilidad de utilizar `TreeExplainer` para las explicaciones SHAP.
-- La política operativa propuesta prioriza aproximadamente el **10 % de mayor riesgo de cada día**. Queda pendiente unificar su implementación entre el notebook y la aplicación, incluidos redondeo, desempates y archivos que contengan varios días.
+- La política operativa propuesta prioriza aproximadamente el **10 % de mayor riesgo de cada día**.
 
 ## Estructura
 
@@ -72,9 +72,9 @@ FinalProject-MachineLearning/
 | 3.3 EDA e insights | §5 (con tabla insight → decisión en §5.11) |
 | 3.4 Paradigmas | §8 no supervisado, §9 supervisado |
 | 3.5 Metodología y selección | §9, §12 |
-| 3.6 Generalización | §6, §10; pendientes de corrección temporal al final de este README |
+| 3.6 Generalización | §6, §10 |
 | 3.7 Métricas | §11 |
-| 3.8 Despliegue | §13, `app/app.py` y enlace público pendiente |
+| 3.8 Despliegue | §13 |
 | 3.9 Reajuste | §14 |
 
 ## Cómo ejecutar
@@ -100,7 +100,7 @@ Abrir la dirección mostrada en la terminal, normalmente `http://localhost:8501`
 La interfaz contiene cuatro pestañas:
 
 - **Evaluar un despacho:** formulario del pedido, probabilidad, semáforo, acción sugerida, segmento del vendedor y razones mediante SHAP.
-- **Lote del día:** carga de CSV y descarga de la lista priorizada. Incluye validaciones básicas; revisar los pendientes de robustez indicados al final.
+- **Lote del día:** carga de CSV y descarga de la lista priorizada. Incluye validaciones básicas.
 - **Ejemplos reales:** pedidos del periodo de prueba con su resultado observado.
 - **Segmentos de vendedores:** perfiles operativos identificados con K-Means.
 
@@ -126,7 +126,6 @@ El notebook incluye una simulación del reajuste. La automatización operativa d
 - La evaluación utiliza pedidos entregados con información suficiente; no cubre por sí sola cancelaciones, pérdidas o todos los pedidos todavía en tránsito.
 - Las probabilidades pueden sobreestimarse cuando cambia la frecuencia de retrasos. Recalcular los umbrales del semáforo no equivale a calibrar las probabilidades.
 - La segmentación tiene separación limitada: los grupos se interpretan como perfiles operativos.
-- La validación temporal y la consistencia de la interfaz requieren cerrar los pendientes siguientes.
 
 ## Fuente de los datos
 
